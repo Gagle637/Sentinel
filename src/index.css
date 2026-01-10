@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sentinel-Style Military-Grade Design System */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Core backgrounds - Ultra dark navy */
+    --background: 220 20% 6%;
+    --foreground: 210 20% 90%;
+
+    /* Surface layers */
+    --card: 220 18% 10%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 220 18% 8%;
+    --popover-foreground: 210 20% 90%;
+
+    /* Primary - Tactical cyan */
+    --primary: 190 95% 45%;
+    --primary-foreground: 220 20% 6%;
+
+    /* Secondary - Muted surface */
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 20% 85%;
+
+    /* Muted elements */
+    --muted: 220 15% 18%;
+    --muted-foreground: 215 15% 55%;
+
+    /* Accent - Subtle highlight */
+    --accent: 220 15% 20%;
+    --accent-foreground: 190 95% 50%;
+
+    /* Alert colors */
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 210 20% 98%;
+
+    /* Severity levels */
+    --severity-critical: 0 85% 55%;
+    --severity-high: 25 95% 55%;
+    --severity-medium: 45 95% 55%;
+    --severity-low: 190 95% 45%;
+
+    /* Borders and inputs */
+    --border: 220 15% 20%;
+    --input: 220 15% 15%;
+    --ring: 190 95% 45%;
+
+    --radius: 0rem;
+
+    /* Sidebar */
+    --sidebar-background: 220 18% 8%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 190 95% 45%;
+    --sidebar-primary-foreground: 220 20% 6%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 190 95% 50%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 190 95% 45%;
+
+    /* Custom gradients */
+    --gradient-tactical: linear-gradient(180deg, hsl(220 18% 12%) 0%, hsl(220 20% 6%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(190 95% 45% / 0.15) 0%, transparent 70%);
+    --gradient-danger: radial-gradient(ellipse at center, hsl(0 85% 55% / 0.2) 0%, transparent 70%);
+
+    /* Shadows */
+    --shadow-glow: 0 0 20px hsl(190 95% 45% / 0.3);
+    --shadow-danger: 0 0 20px hsl(0 85% 55% / 0.4);
+    --shadow-panel: 0 4px 24px hsl(0 0% 0% / 0.5);
+  }
+
+  .dark {
+    --background: 220 20% 6%;
+    --foreground: 210 20% 90%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Monospace for data */
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  /* Tactical panel styling */
+  .panel-tactical {
+    @apply bg-card border border-border;
+    background: var(--gradient-tactical);
+    box-shadow: var(--shadow-panel);
+  }
+
+  /* Glowing elements */
+  .glow-cyan {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glow-danger {
+    box-shadow: var(--shadow-danger);
+  }
+
+  /* Pulse animation for alerts */
+  .pulse-danger {
+    animation: pulse-danger 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .pulse-cyan {
+    animation: pulse-cyan 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Targeting circle */
+  .targeting-circle {
+    @apply pointer-events-none absolute;
+    border: 2px solid hsl(var(--primary));
+    border-radius: 50%;
+    animation: targeting-pulse 1.5s ease-out infinite;
+  }
+
+  .targeting-circle::before,
+  .targeting-circle::after {
+    content: '';
+    @apply absolute;
+    background: hsl(var(--primary));
+  }
+
+  .targeting-circle::before {
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+
+  .targeting-circle::after {
+    width: 1px;
+    height: 100%;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+  }
+
+  /* Scrollbar styling */
+  .scrollbar-tactical::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-tactical::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  .scrollbar-tactical::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+  }
+
+  .scrollbar-tactical::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+
+  /* Data grid lines */
+  .grid-tactical {
+    background-image: 
+      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+@layer utilities {
+  @keyframes pulse-danger {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 hsl(0 85% 55% / 0.7);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 0 10px hsl(0 85% 55% / 0);
+    }
+  }
+
+  @keyframes pulse-cyan {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 hsl(190 95% 45% / 0.7);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 0 10px hsl(190 95% 45% / 0);
+    }
+  }
+
+  @keyframes targeting-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes scan-line {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  .animate-scan {
+    animation: scan-line 3s linear infinite;
+  }
+}
