@@ -20,7 +20,7 @@ const severityConfig: Record<SeverityLevel, { icon: typeof AlertTriangle; color:
 export function EventFeed({ events, onEventClick, isAnalyzing }: EventFeedProps) {
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 px-2">
         <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
           Live Feed
         </h3>
@@ -32,7 +32,7 @@ export function EventFeed({ events, onEventClick, isAnalyzing }: EventFeedProps)
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-tactical space-y-1">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-tactical space-y-2 relative px-2">
         <AnimatePresence mode="popLayout">
           {isAnalyzing ? (
             <motion.div

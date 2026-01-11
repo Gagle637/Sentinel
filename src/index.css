@@ -70,6 +70,10 @@
     --shadow-glow: 0 0 20px hsl(190 95% 45% / 0.3);
     --shadow-danger: 0 0 20px hsl(0 85% 55% / 0.4);
     --shadow-panel: 0 4px 24px hsl(0 0% 0% / 0.5);
+
+    /* Scroll Bar */
+    --scroll-bar-thumb: 210, 10%, 25%;
+    --scroll-bar-thumb-hover: 210, 15%, 40%;
   }
 
   .dark {
@@ -154,6 +158,7 @@
   /* Scrollbar styling */
   .scrollbar-tactical::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
   .scrollbar-tactical::-webkit-scrollbar-track {
@@ -161,11 +166,11 @@
   }
 
   .scrollbar-tactical::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
+    background: hsl(var(--scroll-bar-thumb));
   }
 
   .scrollbar-tactical::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary));
+    background: hsl(var(--scroll-bar-thumb-hover));
   }
 
   /* Data grid lines */

@@ -31,7 +31,7 @@ export function RightSidebar({ events, onEventClick, isAnalyzing }: RightSidebar
       </div>
 
       {/* Event Feed */}
-      <div className="flex-1 p-4 overflow-hidden">
+      <div className="flex-1 overflow-hidden py-4 px-2">
         <EventFeed events={events} onEventClick={onEventClick} isAnalyzing={isAnalyzing} />
       </div>
     </motion.aside>
