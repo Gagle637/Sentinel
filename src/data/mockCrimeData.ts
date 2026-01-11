@@ -1,12 +1,20 @@
-import { CrimeEvent, RiskAnalysis, TrendDataPoint, SeverityLevel } from '@/types/crime';
+import { CrimeEvent, RiskAnalysis, TrendDataPoint, SeverityLevel, ChicagoCrimeRecord } from '@/types/crime';
 
 // San Francisco coordinates
 const SF_CENTER = { lat: 37.7749, lng: -122.4194 };
 
 const generateRandomOffset = (range: number) => (Math.random() - 0.5) * range;
 
-const crimeTypes = ['theft', 'assault', 'vandalism', 'burglary', 'robbery'];
-const severities: SeverityLevel[] = ['critical', 'high', 'medium', 'low'];
+const crimeTypes = [
+  "HOMICIDE", "BATTERY", "ASSAULT", "ROBBERY", "KIDNAPPING",
+  "CRIMINAL SEXUAL ASSAULT", "OFFENSE INVOLVING CHILDREN", "STALKING", "INTIMIDATION", "HUMAN TRAFFICKING",
+  "RITUALISM", "THEFT", "BURGLARY", "MOTOR VEHICLE THEFT", "THEFT OF ANY",
+  "CRIMINAL DAMAGE", "ARSON", "CRIMINAL TRESPASS", "NARCOTICS", "WEAPONS VIOLATION",
+  "DECEPTIVE PRACTICE", "PROSTITUTION", "PUBLIC PEACE VIOLATION", "INTERFERENCE WITH PUBLIC OFFICER", "LIQUOR LAW VIOLATION",
+  "GAMBLING", "OBSCENITY", "PUBLIC INDECENCY", "OTHER OFFENSE", "NON-CRIMINAL", "NON-CRIMINAL (SUBJECT SPECIFIED)",
+  "OTHER NARCOTIC VIOLATION", "CONCEALED CARRY LICENSE VIOLATION"
+];
+const severities: SeverityLevel[] = ['violent', 'property', 'vandalism', 'public'];
 const addresses = [
   'Market St & 5th St',
   'Mission District',
@@ -27,11 +35,12 @@ export const generateMockEvents = (count: number = 15): CrimeEvent[] => {
   for (let i = 0; i < count; i++) {
     const minutesAgo = Math.floor(Math.random() * 1440); // Up to 24 hours ago
     const timestamp = new Date(now.getTime() - minutesAgo * 60000);
+    const crime = crimeTypes[Math.floor(Math.random() * crimeTypes.length)];
     
     events.push({
       id: `evt-${i + 1}`,
       type: crimeTypes[Math.floor(Math.random() * crimeTypes.length)],
-      severity: severities[Math.floor(Math.random() * severities.length)],
+      severity: ChicagoCrimeRecord[crime],
       location: {
         lat: SF_CENTER.lat + generateRandomOffset(0.05),
         lng: SF_CENTER.lng + generateRandomOffset(0.08),
@@ -47,10 +56,10 @@ export const generateMockEvents = (count: number = 15): CrimeEvent[] => {
 
 export const generateRiskAnalysis = (): RiskAnalysis => {
   const score = Math.floor(Math.random() * 40) + 60; // 60-100
-  let level: SeverityLevel = 'low';
-  if (score >= 85) level = 'critical';
-  else if (score >= 70) level = 'high';
-  else if (score >= 50) level = 'medium';
+  let level: SeverityLevel = 'public';
+  if (score >= 85) level = 'violent';
+  else if (score >= 70) level = 'property';
+  else if (score >= 50) level = 'vandalism';
 
   return {
     score,

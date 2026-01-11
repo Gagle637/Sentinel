@@ -8,10 +8,10 @@ interface TrendChartProps {
 }
 
 const severityColors: Record<SeverityLevel, string> = {
-  critical: 'hsl(0, 85%, 55%)',
-  high: 'hsl(25, 95%, 55%)',
-  medium: 'hsl(45, 95%, 55%)',
-  low: 'hsl(190, 95%, 45%)',
+  violent: 'hsl(0, 85%, 55%)',
+  property: 'hsl(25, 95%, 55%)',
+  vandalism: 'hsl(45, 95%, 55%)',
+  public: 'hsl(190, 95%, 45%)',
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {

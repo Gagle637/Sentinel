@@ -8,10 +8,10 @@ interface RiskGaugeProps {
 }
 
 const levelConfig = {
-  critical: { label: 'CRITICAL', color: 'text-severity-critical', bg: 'bg-severity-critical' },
-  high: { label: 'HIGH', color: 'text-severity-high', bg: 'bg-severity-high' },
-  medium: { label: 'MEDIUM', color: 'text-severity-medium', bg: 'bg-severity-medium' },
-  low: { label: 'LOW', color: 'text-severity-low', bg: 'bg-severity-low' },
+  violent: { label: 'VIOLENT', color: 'text-severity-violent', bg: 'bg-severity-violent' },
+  property: { label: 'PROPERTY', color: 'text-severity-property', bg: 'bg-severity-property' },
+  vandalism: { label: 'VANDALISM', color: 'text-severity-vandalism', bg: 'bg-severity-vandalism' },
+  public: { label: 'PUBLIC', color: 'text-severity-public', bg: 'bg-severity-public' },
 };
 
 export function RiskGauge({ score, level, isAnalyzing }: RiskGaugeProps) {

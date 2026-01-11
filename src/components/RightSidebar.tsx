@@ -20,8 +20,8 @@ export function RightSidebar({ events, onEventClick, isAnalyzing }: RightSidebar
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-severity-critical/10 border border-severity-critical">
-            <Radio className="w-5 h-5 text-severity-critical" />
+          <div className="p-2 bg-severity-violent/10 border border-severity-violent">
+            <Radio className="w-5 h-5 text-severity-violent" />
           </div>
           <div>
             <h2 className="font-mono text-sm font-semibold tracking-wide">INCIDENT MONITOR</h2>

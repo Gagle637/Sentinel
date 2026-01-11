@@ -62,10 +62,10 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         severity: {
-          critical: "hsl(var(--severity-critical))",
-          high: "hsl(var(--severity-high))",
-          medium: "hsl(var(--severity-medium))",
-          low: "hsl(var(--severity-low))",
+          violent: "hsl(var(--severity-violent))",
+          property: "hsl(var(--severity-property))",
+          vandalism: "hsl(var(--severity-vandalism))",
+          public: "hsl(var(--severity-public))",
         },
       },
       borderRadius: {

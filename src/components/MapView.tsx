@@ -22,10 +22,10 @@ interface MapViewProps {
 }
 
 const severityColors: Record<SeverityLevel, string> = {
-  critical: '#ef4444',
-  high: '#f97316',
-  medium: '#eab308',
-  low: '#0ea5e9',
+  violent: '#ef4444',
+  property: '#f97316',
+  vandalism: '#eab308',
+  public: '#0ea5e9',
 };
 
 // Tactical SVG icons for different crime types
@@ -87,11 +87,11 @@ const createIconStyle = (event: CrimeEvent): Style[] => {
   const color = severityColors[event.severity];
   const svg = createTacticalIcon(event.type, color);
   const encodedSvg = encodeURIComponent(svg);
-  const isPulsing = event.severity === 'critical' || event.severity === 'high';
+  const isPulsing = event.severity === 'violent' || event.severity === 'property';
 
   const styles: Style[] = [];
 
-  // Add glow effect for high severity
+  // Add glow effect for property severity
   if (isPulsing) {
     styles.push(
       new Style({
@@ -350,7 +350,7 @@ export function MapView({ events, onMapClick, focusedEvent }: MapViewProps) {
       </div>
 
       {/* Status bar */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 px-4 py-2 bg-card/90 border border-border backdrop-blur-sm">
+      <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 px-4 py-2 bg-card/90 border border-border backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
           <span className="font-mono text-xs text-muted-foreground">TACTICAL VIEW</span>

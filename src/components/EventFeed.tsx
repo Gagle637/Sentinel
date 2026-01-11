@@ -11,10 +11,10 @@ interface EventFeedProps {
 }
 
 const severityConfig: Record<SeverityLevel, { icon: typeof AlertTriangle; color: string; pulse: boolean }> = {
-  critical: { icon: Skull, color: 'text-severity-critical', pulse: true },
-  high: { icon: AlertTriangle, color: 'text-severity-high', pulse: true },
-  medium: { icon: AlertCircle, color: 'text-severity-medium', pulse: false },
-  low: { icon: Info, color: 'text-severity-low', pulse: false },
+  violent: { icon: Skull, color: 'text-severity-violent', pulse: true },
+  property: { icon: AlertTriangle, color: 'text-severity-property', pulse: true },
+  vandalism: { icon: AlertCircle, color: 'text-severity-vandalism', pulse: false },
+  public: { icon: Info, color: 'text-severity-public', pulse: false },
 };
 
 export function EventFeed({ events, onEventClick, isAnalyzing }: EventFeedProps) {
@@ -25,7 +25,7 @@ export function EventFeed({ events, onEventClick, isAnalyzing }: EventFeedProps)
           Live Feed
         </h3>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 bg-severity-critical rounded-full animate-pulse" />
+          <span className="w-2 h-2 bg-severity-violent rounded-full animate-pulse" />
           <span className="font-mono text-xs text-muted-foreground">
             {events.length} Active
           </span>

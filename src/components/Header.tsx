@@ -21,7 +21,7 @@ export function Header() {
       <div className="flex items-center gap-3">
         <div className="relative">
           <Eye className="w-6 h-6 text-primary" />
-          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-severity-critical rounded-full animate-pulse" />
+          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-severity-violent rounded-full animate-pulse" />
         </div>
         <div>
           <h1 className="font-mono text-sm font-bold tracking-widest text-foreground">
@@ -36,7 +36,7 @@ export function Header() {
       {/* Status indicators */}
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
-          <Wifi className="w-4 h-4 text-severity-low" />
+          <Wifi className="w-4 h-4 text-severity-public" />
           <span className="font-mono text-xs text-muted-foreground">CONNECTED</span>
         </div>
 

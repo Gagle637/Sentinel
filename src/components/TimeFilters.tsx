@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
-import { TimeRange, EventType } from '@/types/crime';
+import { TimeRange, SeverityLevel } from '@/types/crime';
 import { cn } from '@/lib/utils';
 
 interface TimeFiltersProps {
   selectedTime: TimeRange;
-  selectedTypes: EventType[];
+  selectedTypes: SeverityLevel[];
   onTimeChange: (time: TimeRange) => void;
-  onTypeToggle: (type: EventType) => void;
+  onTypeToggle: (type: SeverityLevel) => void;
 }
 
 const timeRanges: { value: TimeRange; label: string }[] = [
@@ -15,12 +15,11 @@ const timeRanges: { value: TimeRange; label: string }[] = [
   { value: '24h', label: '24H' },
 ];
 
-const eventTypes: { value: EventType; label: string }[] = [
-  { value: 'theft', label: 'THEFT' },
-  { value: 'assault', label: 'ASSAULT' },
-  { value: 'vandalism', label: 'VANDAL' },
-  { value: 'burglary', label: 'BURGLARY' },
-  { value: 'robbery', label: 'ROBBERY' },
+const eventTypes: { value: SeverityLevel; label: string }[] = [
+  { value: 'violent', label: 'VIOLENT' },
+  { value: 'property', label: 'PROPERTY' },
+  { value: 'vandalism', label: 'VANDALISM' },
+  { value: 'public', label: 'PUBLIC' },
 ];
 
 export function TimeFilters({
@@ -68,7 +67,7 @@ export function TimeFilters({
                 onClick={() => onTypeToggle(type.value)}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  'py-1 px-2 font-mono text-[10px] font-medium transition-all duration-200 border',
+                  'py-1 px-2 font-mono text-[10px] font-vandalism transition-all duration-200 border',
                   isSelected
                     ? 'bg-primary/20 text-primary border-primary'
                     : 'bg-transparent text-muted-foreground border-border hover:border-muted-foreground'

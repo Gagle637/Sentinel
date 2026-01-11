@@ -9,17 +9,16 @@ import {
   generateRiskAnalysis,
   generateTrendData,
 } from '@/data/mockCrimeData';
-import { CrimeEvent, TimeRange, EventType } from '@/types/crime';
+import { CrimeEvent, TimeRange, SeverityLevel } from '@/types/crime';
 
 const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedTime, setSelectedTime] = useState<TimeRange>('6h');
-  const [selectedTypes, setSelectedTypes] = useState<EventType[]>([
-    'theft',
-    'assault',
+  const [selectedTypes, setSelectedTypes] = useState<SeverityLevel[]>([
+    'violent',
+    'property',
     'vandalism',
-    'burglary',
-    'robbery',
+    'public',
   ]);
   const [riskAnalysis, setRiskAnalysis] = useState(generateRiskAnalysis());
   const [trendData, setTrendData] = useState(generateTrendData(6));
@@ -59,7 +58,7 @@ const Index = () => {
     }, 500);
   }, []);
 
-  const handleTypeToggle = useCallback((type: EventType) => {
+  const handleTypeToggle = useCallback((type: SeverityLevel) => {
     setSelectedTypes((prev) =>
       prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
@@ -67,7 +66,7 @@ const Index = () => {
 
   // Filter events by selected types
   const filteredEvents = events.filter((e) =>
-    selectedTypes.includes(e.type as EventType)
+    selectedTypes.includes(e.severity as SeverityLevel)
   );
 
   return (

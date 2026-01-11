@@ -14,8 +14,8 @@ const trendIcons = {
 };
 
 const trendColors = {
-  up: 'text-severity-high',
-  down: 'text-severity-low',
+  up: 'text-severity-property',
+  down: 'text-severity-public',
   stable: 'text-muted-foreground',
 };
 

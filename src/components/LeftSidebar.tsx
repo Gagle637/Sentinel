@@ -3,15 +3,15 @@ import { Shield, Target } from 'lucide-react';
 import { RiskGauge } from './RiskGauge';
 import { RiskFactors } from './RiskFactors';
 import { TimeFilters } from './TimeFilters';
-import { RiskAnalysis, TimeRange, EventType } from '@/types/crime';
+import { RiskAnalysis, TimeRange, SeverityLevel } from '@/types/crime';
 
 interface LeftSidebarProps {
   analysis: RiskAnalysis;
   isAnalyzing: boolean;
   selectedTime: TimeRange;
-  selectedTypes: EventType[];
+  selectedTypes: SeverityLevel[];
   onTimeChange: (time: TimeRange) => void;
-  onTypeToggle: (type: EventType) => void;
+  onTypeToggle: (type: SeverityLevel) => void;
 }
 
 export function LeftSidebar({
