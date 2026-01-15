@@ -9,18 +9,14 @@ interface LeftSidebarProps {
   analysis: RiskAnalysis;
   isAnalyzing: boolean;
   selectedTime: TimeRange;
-  selectedTypes: SeverityLevel[];
   onTimeChange: (time: TimeRange) => void;
-  onTypeToggle: (type: SeverityLevel) => void;
 }
 
 export function LeftSidebar({
   analysis,
   isAnalyzing,
   selectedTime,
-  selectedTypes,
   onTimeChange,
-  onTypeToggle,
 }: LeftSidebarProps) {
   return (
     <motion.aside
@@ -62,9 +58,7 @@ export function LeftSidebar({
       <div className="p-4">
         <TimeFilters
           selectedTime={selectedTime}
-          selectedTypes={selectedTypes}
           onTimeChange={onTimeChange}
-          onTypeToggle={onTypeToggle}
         />
       </div>
     </motion.aside>

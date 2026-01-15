@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { motion, AnimatePresence } from 'framer-motion';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -14,11 +15,14 @@ import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 import { CrimeEvent, SeverityLevel } from '@/types/crime';
 import { Crosshair } from 'lucide-react';
 import 'ol/ol.css';
+import { cn } from '@/lib/utils';
 
 interface MapViewProps {
   events: CrimeEvent[];
-  onMapClick: (coords: { lat: number; lng: number }) => void;
   focusedEvent: CrimeEvent | null;
+  selectedTypes: SeverityLevel[];
+  onMapClick: (coords: { lat: number; lng: number }) => void;  
+  onTypeToggle: (type: SeverityLevel) => void;
 }
 
 const severityColors: Record<SeverityLevel, string> = {
@@ -29,63 +33,45 @@ const severityColors: Record<SeverityLevel, string> = {
 };
 
 // Tactical SVG icons for different crime types
-const createTacticalIcon = (type: string, color: string): string => {
-  const icons: Record<string, string> = {
-    // Crosshair target for theft
-    theft: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke="${color}" stroke-width="2"/>
-      <circle cx="16" cy="16" r="6" fill="none" stroke="${color}" stroke-width="1.5"/>
-      <line x1="16" y1="4" x2="16" y2="10" stroke="${color}" stroke-width="1.5"/>
-      <line x1="16" y1="22" x2="16" y2="28" stroke="${color}" stroke-width="1.5"/>
-      <line x1="4" y1="16" x2="10" y2="16" stroke="${color}" stroke-width="1.5"/>
-      <line x1="22" y1="16" x2="28" y2="16" stroke="${color}" stroke-width="1.5"/>
-      <circle cx="16" cy="16" r="2" fill="${color}"/>
-    </svg>`,
-    
-    // Warning triangle for assault
-    assault: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke="${color}" stroke-width="2"/>
-      <path d="M16 8 L24 24 L8 24 Z" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>
-      <line x1="16" y1="13" x2="16" y2="18" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="16" cy="21" r="1.5" fill="${color}"/>
-    </svg>`,
-    
-    // Shield/lock for burglary
-    burglary: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke="${color}" stroke-width="2"/>
-      <path d="M16 6 L24 10 L24 16 C24 21 20 25 16 26 C12 25 8 21 8 16 L8 10 Z" fill="none" stroke="${color}" stroke-width="1.5"/>
-      <line x1="12" y1="16" x2="20" y2="16" stroke="${color}" stroke-width="2"/>
-      <line x1="16" y1="12" x2="16" y2="20" stroke="${color}" stroke-width="2"/>
-    </svg>`,
-    
-    // Spray can for vandalism
-    vandalism: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke="${color}" stroke-width="2"/>
-      <rect x="12" y="12" width="8" height="14" rx="1" fill="none" stroke="${color}" stroke-width="1.5"/>
-      <rect x="14" y="8" width="4" height="4" fill="none" stroke="${color}" stroke-width="1.5"/>
-      <circle cx="9" cy="9" r="1" fill="${color}"/>
-      <circle cx="7" cy="12" r="1" fill="${color}"/>
-      <circle cx="11" cy="7" r="1" fill="${color}"/>
-    </svg>`,
-    
-    // Gun/danger for robbery
-    robbery: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke="${color}" stroke-width="2"/>
-      <circle cx="16" cy="16" r="8" fill="none" stroke="${color}" stroke-width="1.5"/>
-      <circle cx="16" cy="16" r="4" fill="none" stroke="${color}" stroke-width="1.5"/>
-      <line x1="16" y1="4" x2="16" y2="8" stroke="${color}" stroke-width="2"/>
-      <line x1="16" y1="24" x2="16" y2="28" stroke="${color}" stroke-width="2"/>
-      <line x1="4" y1="16" x2="8" y2="16" stroke="${color}" stroke-width="2"/>
-      <line x1="24" y1="16" x2="28" y2="16" stroke="${color}" stroke-width="2"/>
-    </svg>`,
+const createTacticalIconHTML = (type: string, color: string): JSX.Element => {
+  const icons: Record<string, JSX.Element> = {
+    violent: <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke={color} stroke-width="2"/>
+      <path d="M16 8 L24 24 L8 24 Z" fill="none" stroke={color} stroke-width="1.5" stroke-linejoin="round"/>
+      <line x1="16" y1="13" x2="16" y2="18" stroke={color} stroke-width="2" stroke-linecap="round"/>
+      <circle cx="16" cy="21" r="1.5" fill={color}/>
+    </svg>,
+    property: <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke={color} stroke-width="2"/>
+      <path d="M16 6 L24 10 L24 16 C24 21 20 25 16 26 C12 25 8 21 8 16 L8 10 Z" fill="none" stroke={color} stroke-width="1.5"/>
+      <line x1="12" y1="16" x2="20" y2="16" stroke={color} stroke-width="2"/>
+      <line x1="16" y1="12" x2="16" y2="20" stroke={color} stroke-width="2"/>
+    </svg>,
+    vandalism: <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke={color} stroke-width="2"/>
+      <rect x="12" y="12" width="8" height="14" rx="1" fill="none" stroke={color} stroke-width="1.5"/>
+      <rect x="14" y="8" width="4" height="4" fill="none" stroke={color} stroke-width="1.5"/>
+      <circle cx="9" cy="9" r="1" fill={color}/>
+      <circle cx="7" cy="12" r="1" fill={color}/>
+      <circle cx="11" cy="7" r="1" fill={color}/>
+    </svg>,
+    public: <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="14" fill="rgba(10,14,20,0.9)" stroke={color} stroke-width="2"/>
+      <circle cx="16" cy="16" r="8" fill="none" stroke={color} stroke-width="1.5"/>
+      <circle cx="16" cy="16" r="4" fill="none" stroke={color} stroke-width="1.5"/>
+      <line x1="16" y1="4" x2="16" y2="8" stroke={color} stroke-width="2"/>
+      <line x1="16" y1="24" x2="16" y2="28" stroke={color} stroke-width="2"/>
+      <line x1="4" y1="16" x2="8" y2="16" stroke={color} stroke-width="2"/>
+      <line x1="24" y1="16" x2="28" y2="16" stroke={color} stroke-width="2"/>
+    </svg>,
   };
 
-  return icons[type] || icons.theft;
+  return icons[type] || icons.violent;
 };
 
 const createIconStyle = (event: CrimeEvent): Style[] => {
   const color = severityColors[event.severity];
-  const svg = createTacticalIcon(event.type, color);
+  const svg = renderToStaticMarkup(createTacticalIconHTML(event.severity, color));
   const encodedSvg = encodeURIComponent(svg);
   const isPulsing = event.severity === 'violent' || event.severity === 'property';
 
@@ -157,7 +143,7 @@ const createRadiusStyles = (): Style[] => {
   ];
 };
 
-export function MapView({ events, onMapClick, focusedEvent }: MapViewProps) {
+export function MapView({ events, onMapClick, focusedEvent, selectedTypes, onTypeToggle }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<Map | null>(null);
   const vectorSource = useRef<VectorSource>(new VectorSource());
@@ -165,6 +151,12 @@ export function MapView({ events, onMapClick, focusedEvent }: MapViewProps) {
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
   const [targetingPosition, setTargetingPosition] = useState<{ x: number; y: number } | null>(null);
   const [selectedCoords, setSelectedCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const typeList: Array<{ type: SeverityLevel, label: string }> = [
+    { type: 'violent', label: 'Violent' },
+    { type: 'property', label: 'Property' },
+    { type: 'vandalism', label: 'Vandalism' },
+    { type: 'public', label: 'Public' },
+  ];
 
   // Initialize map
   useEffect(() => {
@@ -333,20 +325,29 @@ export function MapView({ events, onMapClick, focusedEvent }: MapViewProps) {
       <div className="absolute inset-0 pointer-events-none grid-tactical opacity-20" />
 
       {/* Legend */}
-      <div className="absolute top-4 left-4 flex flex-col gap-2 p-3 bg-card/90 border border-border backdrop-blur-sm">
+      <div className="absolute top-4 left-4 flex flex-col gap-1 p-3 bg-card/90 border border-border backdrop-blur-sm">
         <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Legend</span>
-        {[
-          { type: 'theft', label: 'Theft', icon: '⊕' },
-          { type: 'assault', label: 'Assault', icon: '⚠' },
-          { type: 'burglary', label: 'Burglary', icon: '⛨' },
-          { type: 'vandalism', label: 'Vandalism', icon: '◎' },
-          { type: 'robbery', label: 'Robbery', icon: '◉' },
-        ].map((item) => (
-          <div key={item.type} className="flex items-center gap-2">
-            <span className="font-mono text-xs text-primary">{item.icon}</span>
-            <span className="font-mono text-[10px] text-muted-foreground uppercase">{item.label}</span>
-          </div>
-        ))}
+        {typeList.map((item) => {
+          const color = severityColors[item.type];
+          const svg = createTacticalIconHTML(item.type, color);
+          const isSelected = selectedTypes.includes(item.type);
+          return <div
+            key={item.type}
+            className={cn(
+              'relative flex items-center gap-2 hover:bg-secondary px-1 py-1 rounded-md cursor-pointer',
+              isSelected
+                ? ''
+                : 'text-muted-foreground'
+
+            )}
+            onClick={() => onTypeToggle(item.type)}
+          >
+            <span className="flex items-center w-4 h-4"> 
+              { svg }
+            </span>
+            <span className="font-mono text-[10px] uppercase ">{item.label}</span>
+          </div>;
+        })}
       </div>
 
       {/* Status bar */}

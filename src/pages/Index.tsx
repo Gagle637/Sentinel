@@ -78,9 +78,7 @@ const Index = () => {
           analysis={riskAnalysis}
           isAnalyzing={isAnalyzing}
           selectedTime={selectedTime}
-          selectedTypes={selectedTypes}
           onTimeChange={handleTimeChange}
-          onTypeToggle={handleTypeToggle}
         />
 
         <main className="flex-1 flex flex-col overflow-hidden">
@@ -89,6 +87,8 @@ const Index = () => {
               events={filteredEvents}
               onMapClick={handleMapClick}
               focusedEvent={focusedEvent}
+              selectedTypes={selectedTypes}
+              onTypeToggle={handleTypeToggle}
             />
           </div>
           
